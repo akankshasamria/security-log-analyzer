@@ -1,7 +1,9 @@
 
 import sqlite3
 from pathlib import Path
-from flask import Flask, render_template
+from flask import Flask, render_template, request, Response
+import csv
+import io
 
 app = Flask(__name__)
 
@@ -9,18 +11,36 @@ BASE_DIR = Path(__file__).resolve().parent
 DB_FILE = BASE_DIR / "data" / "security_logs.db"
 
 
-@app.route("/health")
-def health():
-    return {
-        "status": "success",
-        "message": "Security Log Analyzer backend is running"
-    }
-
 
 @app.route("/")
 def dashboard():
     if not DB_FILE.exists():
         return "Database not found. Run python database.py first.", 500
+
+    ip_filter = request.args.get("ip", "").strip()
+    username_filter = request.args.get("username", "").strip()
+    status_filter = request.args.get("status", "").strip().lower()
+
+    query = """
+        SELECT timestamp, ip_address, username, status
+        FROM logs
+        WHERE 1=1
+    """
+    params = []
+
+    if ip_filter:
+        query += " AND ip_address LIKE ?"
+        params.append(f"%{ip_filter}%")
+
+    if username_filter:
+        query += " AND username LIKE ?"
+        params.append(f"%{username_filter}%")
+
+    if status_filter in ("success", "failure"):
+        query += " AND status = ?"
+        params.append(status_filter)
+
+    query += " ORDER BY timestamp DESC LIMIT 500"
 
     with sqlite3.connect(DB_FILE) as conn:
         conn.row_factory = sqlite3.Row
@@ -37,12 +57,7 @@ def dashboard():
             "SELECT COUNT(*) FROM alerts"
         ).fetchone()[0]
 
-        recent_logs = conn.execute("""
-            SELECT timestamp, ip_address, username, status
-            FROM logs
-            ORDER BY timestamp DESC
-            LIMIT 10
-        """).fetchall()
+        recent_logs = conn.execute(query, params).fetchall()
 
         alerts = conn.execute("""
             SELECT ip_address, failed_attempts, alert_type, severity
@@ -56,9 +71,20 @@ def dashboard():
         failed_logins=failed_logins,
         total_alerts=total_alerts,
         recent_logs=recent_logs,
-        alerts=alerts
+        alerts=alerts,
+        ip_filter=ip_filter,
+        username_filter=username_filter,
+        status_filter=status_filter
     )
+
+@app.route("/health")
+def health():
+    return {
+        "status": "success",
+        "message": "Security Log Analyzer backend is running"
+    }
 
 
 if __name__ == "__main__":
     app.run(port=5001, debug=True)
+
