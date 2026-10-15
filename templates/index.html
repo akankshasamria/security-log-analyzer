@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Security Log Analyzer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        header {
+            background: #0f172a;
+            color: white;
+            padding: 22px 30px;
+        }
+
+        main {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 18px;
+        }
+
+        .card {
+            background: white;
+            padding: 22px;
+            border-radius: 12px;
+            box-shadow: 0 3px 12px #0000000d;
+        }
+
+        .number {
+            font-size: 30px;
+            font-weight: bold;
+            color: #0891b2;
+        }
+
+        .status {
+            color: #15803d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Security Log Analyzer</h1>
+        <p>Monitor login activity and identify suspicious events</p>
+    </header>
+
+    <main>
+        <h2>Security Dashboard</h2>
+        <p class="status">● Application is running</p>
+
+        <section class="cards">
+            <div class="card">
+                <h3>Total Log Events</h3>
+                <p class="number">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Failed Logins</h3>
+                <p class="number">0</p>
+            </div>
+
+            <div class="card">
+                <h3>Security Alerts</h3>
+                <p class="number">0</p>
+            </div>
+        </section>
+
+        <section class="card" style="margin-top: 24px;">
+            <h2>Recent Activity</h2>
+            <p>No logs have been imported yet.</p>
+        </section>
+    </main>
+</body>
+</html>
+
