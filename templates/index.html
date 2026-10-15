@@ -124,23 +124,62 @@
     </section>
 
     <section>
+       
+<form method="GET" action="/" style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:20px;">
+    <input
+        type="text"
+        name="ip"
+        placeholder="Filter by IP address"
+        value="{{ ip_filter }}"
+        style="padding:10px;"
+    >
+
+    <input
+        type="text"
+        name="username"
+        placeholder="Filter by username"
+        value="{{ username_filter }}"
+        style="padding:10px;"
+    >
+
+    <select name="status" style="padding:10px;">
+        <option value="">All statuses</option>
+        <option value="success" {% if status_filter == 'success' %}selected{% endif %}>Success</option>
+        <option value="failure" {% if status_filter == 'failure' %}selected{% endif %}>Failure</option>
+    </select>
+
+    <button type="submit" style="padding:10px 16px;">Apply Filters</button>
+    <a href="/" style="padding:10px;">Clear Filters</a>
+</form>
+
         <h2>Recent Login Activity</h2>
+
         <div class="table-wrap">
             <table>
-                <tr>
-                    <th>Timestamp</th>
-                    <th>IP Address</th>
-                    <th>Username</th>
-                    <th>Status</th>
-                </tr>
-                {% for log in recent_logs %}
-                <tr>
-                    <td>{{ log["timestamp"] }}</td>
-                    <td>{{ log["ip_address"] }}</td>
-                    <td>{{ log["username"] }}</td>
-                    <td class="{{ log['status'] }}">{{ log["status"] }}</td>
-                </tr>
-                {% endfor %}
+                <thead>
+                    <tr>
+                        <th>Timestamp</th>
+                        <th>IP Address</th>
+                        <th>Username</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for log in recent_logs %}
+                    <tr>
+                        <td>{{ log["timestamp"] }}</td>
+                        <td>{{ log["ip_address"] }}</td>
+                        <td>{{ log["username"] }}</td>
+                        <td class="{{ log['status'] }}">
+                            {{ log["status"] }}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="4">No matching login records found.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
             </table>
         </div>
     </section>
