@@ -152,6 +152,11 @@
     <a href="/" style="padding:10px;">Clear Filters</a>
 </form>
 
+<a href="{{ url_for('export_logs', ip=ip_filter, username=username_filter, status=status_filter) }}"
+   style="display:inline-block; padding:10px 16px; margin-bottom:20px; background:#198754; color:white; text-decoration:none; border-radius:5px;">
+    Export CSV
+</a>
+
         <h2>Recent Login Activity</h2>
 
         <div class="table-wrap">
